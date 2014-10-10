@@ -10,7 +10,7 @@
 		$result = $applicationSql->fetchAll(PDO::FETCH_ASSOC);
 		$header = true;
 		echo "<table border='1'>";
-		if(empty(result)){
+		if(empty($result)){
 			throw new Exception("<p>No applications in database.</p>");
 		}
 		foreach ($result as $row) {
