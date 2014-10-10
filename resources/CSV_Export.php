@@ -7,9 +7,10 @@
 		$db = new PDO("mysql:dbname=".DB_APP_DATABASE.";host=".DB_HOST, DB_USERNAME, DB_PASSWORD);
 		$filename = 'Applicants.csv';
 		$CSVFile = fopen('php://output', 'w'); 
-		$applicationSql=$db->prepare(ExportCSVSql());
+		$applicationSql=$db->prepare(ExportCSVStatement());
 		$applicationSql->execute();
 		$result = $applicationSql->fetchAll(PDO::FETCH_ASSOC);
+
 		$header = true;
 		if(!empty(result)){
 			foreach ($result as $row) {
