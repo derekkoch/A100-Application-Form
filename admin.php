@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 
 	<head>
@@ -45,7 +44,7 @@
 			<!-- Select all applications table include statement -->
 			<?php include 'resources/select.php' ?>
 
-		</div>	
+		</div>
 
 		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -53,5 +52,5 @@
 		<script src="public_html/js/bootstrap.js"></script>
 
 	</body>
-	
+
 </html>

@@ -2,7 +2,7 @@
  <head><title>PHP Test</title></head>
  <body>
 <?php
-	echo '<p>A100 Application Form</p>'; 
+	echo '<p>A100 Application Form</p>';
 	// select.php Script to execute from index.php to view the contents of test_db.Apprentices2
 
 	include "cred_int.php";
@@ -14,25 +14,24 @@
 		echo "Failed to connect to MySQL: " . mysqli_connect_error();
 	}
 
-	
+
 	//get variable
 	$email = $_POST["emailLogin"];  //receives content from email field in gateway page
 	$password =$_POST["passwordLogin"];  //receives content from password field in gateway page
-	/*echo "$password=".sha1($password);
-	echo "<br/>email=".$email;*/// This echo clause is for debug.
+	echo "<br/>email=".$email;/// This echo clause is for debug.
 	$result = mysqli_query($con,"SELECT * FROM Apprentices2 Where email='$email'");  //sql where statements must be wrapped in apostrophe. If $email exits, return the whole row data.
 	// var_dump($result);// This echo clause is for debug.
 	$row = mysqli_fetch_assoc($result);
 	 // var_dump($row);// This echo clause is for debug.
 	if ($row) {//If finding the user record exists, next step judge the password is whether correct or not.
-		
+
 		// var_dump($res);// This echo clause is for debug.
 		// echo "in if";// This echo clause is for debug.
 		if ($row['password']==sha1($password)) {
 			// Password is correct.
 			// echo "Password is correct";// This echo clause is for debug.
 			if ($row['status']==1) {
-				
+
 				echo "<div>This application has been submitted already and is no longer available for editting.";
 				/*echo "<table border='1'>//show the user's information derectly
 					<tr>
@@ -58,7 +57,7 @@
 				mysqli_close($con);
 				echo '<p><a href="../index.php">Click here to go to gateway</a></p>';
 				echo "<p><a href=\"select.php?email=$email\">Click here to view table</a></p>";
-				
+
 			}else{
 				// echo "status doen't complete";
 				echo '<form action="replace.php" method="post">';
@@ -80,9 +79,9 @@
 		exit();
 		// echo "<br/>No Such User exists, please log in with a valid email address and password";// This echo clause is for debug.
 	}
-	
+
 	include 'select.php';// This echo clause is for debug.
 ?>
-		
+
  </body>
 </html>
