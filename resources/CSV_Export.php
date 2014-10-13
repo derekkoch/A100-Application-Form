@@ -1,10 +1,11 @@
 <?php
 
-	include "cred_int.php";
+	include "db_conn.php";
 	include "SQL_Statement.php";
 
 	try{
-		$db = new PDO("mysql:dbname=".DB_APP_DATABASE.";host=".DB_HOST, DB_USERNAME, DB_PASSWORD);
+		$dbh = dbconn();
+		$dbh->exec("use applications_db");
 		$filename = 'Applicants.csv';
 		$CSVFile = fopen('php://output', 'w'); 
 		$applicationSql=$db->prepare(ExportCSVStatement());

@@ -6,8 +6,8 @@ $dbh = null;
 function dbconn(){
     try{
 
-        //build connection
         $dbh = new PDO ('mysql:host='.HOST,USER,PASSWORD);
+        $dbh->exec("use applications_db");
         return $dbh;
 
     }catch(PDOException $e){

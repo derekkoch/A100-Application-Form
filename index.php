@@ -26,9 +26,8 @@
 
 	<!-- PHP to pull Cohort Dropdown Options -->
 	<?php
-	include "resources/db_conn.php";
+	include "admin/db_conn.php";
 	$dbh = dbconn();
-	$dbh->exec("use applications_db");
 
 	$dropdownSql = "SELECT name FROM cohorts WHERE cohort_is_active='1'";
 	$results = $dbh->prepare($dropdownSql);

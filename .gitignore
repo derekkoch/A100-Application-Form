@@ -1,3 +1,5 @@
 Thumbs.db
 .DS_Store
 admin/cred_ext.php
+resources/cred_ext.php
+resources/cred_int.php
