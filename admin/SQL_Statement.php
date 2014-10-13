@@ -199,24 +199,6 @@ function Recreate_DB(){
      		FOREIGN KEY (user_id) REFERENCES users(user_id)
 			)",
 
-			"CREATE TABLE applications(
-				application_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-				applicant_id INT NOT NULL,
-				cohort_name varchar(150) NOT NULL,
-				referral_id INT UNSIGNED NOT NULL,
-				schedule_id INT UNSIGNED NOT NULL,
-				experience_id INT UNSIGNED NOT NULL,
-				material_id INT UNSIGNED NOT NULL,
-				is_complete BIT NOT NULL,
-				submit_timestamp DATETIME,
-				last_accessed_timestamp DATETIME NOT NULL,
-	    		FOREIGN KEY (applicant_id) REFERENCES applicants(applicant_id),
-	    		FOREIGN KEY (referral_id) REFERENCES referrals(referral_id),
-	    		FOREIGN KEY (schedule_id) REFERENCES schedules(schedule_id),
-	    		FOREIGN KEY (experience_id) REFERENCES experiences(experience_id),
-	    		FOREIGN KEY (material_id) REFERENCES materials(material_id)
-				)",
-
 		"CREATE TABLE referrals(
 			referral_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			referral_1 INT UNSIGNED,
@@ -258,22 +240,6 @@ function Recreate_DB(){
 			additional_info TEXT
 			)",
 
-		"CREATE TABLE fields(
-			field_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-			field_name VARCHAR(50) NOT NULL,
-			field_description TEXT,
-			pre_text TEXT,
-			inside_text TEXT,
-			post_text TEXT,
-			section_id INT UNSIGNED NOT NULL,
-			inner_arrange TINYINT UNSIGNED NOT NULL,
-			options_target VARCHAR(30),
-			is_required BOOLEAN NOT NULL,
-			field_is_active BOOLEAN NOT NULL,
-			response_target VARCHAR(30) NOT NULL,
-    		FOREIGN KEY (section_id) REFERENCES sections(section_id)
-			)",
-
 		"CREATE TABLE sections(
 			section_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			section_name VARCHAR(50) NOT NULL,
@@ -308,6 +274,40 @@ function Recreate_DB(){
 			input_type VARCHAR(30),
 			arrange TINYINT UNSIGNED NOT NULL,
 			option_is_active BOOLEAN NOT NULL
+			)",
+
+		"CREATE TABLE fields(
+			field_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+			field_name VARCHAR(50) NOT NULL,
+			field_description TEXT,
+			pre_text TEXT,
+			inside_text TEXT,
+			post_text TEXT,
+			section_id INT UNSIGNED NOT NULL,
+			inner_arrange TINYINT UNSIGNED NOT NULL,
+			options_target VARCHAR(30),
+			is_required BOOLEAN NOT NULL,
+			field_is_active BOOLEAN NOT NULL,
+			response_target VARCHAR(30) NOT NULL,
+    		FOREIGN KEY (section_id) REFERENCES sections(section_id)
+			)",
+
+		"CREATE TABLE applications(
+			application_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+			applicant_id INT NOT NULL,
+			cohort_name varchar(150) NOT NULL,
+			referral_id INT UNSIGNED NOT NULL,
+			schedule_id INT UNSIGNED NOT NULL,
+			experience_id INT UNSIGNED NOT NULL,
+			material_id INT UNSIGNED NOT NULL,
+			is_complete BIT NOT NULL,
+			submit_timestamp DATETIME,
+			last_accessed_timestamp DATETIME NOT NULL,
+    		FOREIGN KEY (applicant_id) REFERENCES applicants(applicant_id),
+    		FOREIGN KEY (referral_id) REFERENCES referrals(referral_id),
+    		FOREIGN KEY (schedule_id) REFERENCES schedules(schedule_id),
+    		FOREIGN KEY (experience_id) REFERENCES experiences(experience_id),
+    		FOREIGN KEY (material_id) REFERENCES materials(material_id)
 			)"
 		);
 	return $statement;
