@@ -183,7 +183,7 @@ function Recreate_DB(){
 
 		"CREATE TABLE applicants(
 			applicant_id INT  NOT NULL AUTO_INCREMENT PRIMARY KEY,
-			user_id INT NOT NULL  FOREIGN KEY REFERENCES users(user_id),
+			user_id INT NOT NULL,
 			school_name VARCHAR(150),
 			major VARCHAR(50),
 			graduation_date VARCHAR(30),
@@ -195,21 +195,27 @@ function Recreate_DB(){
 			linkedin VARCHAR(50),
 			portfolio VARCHAR (50),
 			age_check INT UNSIGNED,
-			legal_status INT UNSIGNED
+			legal_status INT UNSIGNED,
+     		FOREIGN KEY (user_id) REFERENCES users(user_id)
 			)",
 
-		"CREATE TABLE applications(
-			application_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-			applicant_id INT NOT NULL FOREIGN KEY REFERENCES applicants(applicant_id),
-			cohort_name varchar(150) NOT NULL,
-			referral_id INT NOT NULL REFERENCES FOREIGN KEY referrals(referral_id),
-			schedule_id INT NOT NULL REFERENCES FOREIGN KEY schedules(schedule_id),
-			experience_id INT NOT NULL REFERENCES FOREIGN KEY experiences(experience_id),
-			material_id INT NOT NULL REFERENCES FOREIGN KEY materials(material_id),
-			is_complete BIT NOT NULL,
-			submit_timestamp DATETIME,
-			last_accessed_timestamp DATETIME NOT NULL
-			)",
+			"CREATE TABLE applications(
+				application_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+				applicant_id INT NOT NULL,
+				cohort_name varchar(150) NOT NULL,
+				referral_id INT UNSIGNED NOT NULL,
+				schedule_id INT UNSIGNED NOT NULL,
+				experience_id INT UNSIGNED NOT NULL,
+				material_id INT UNSIGNED NOT NULL,
+				is_complete BIT NOT NULL,
+				submit_timestamp DATETIME,
+				last_accessed_timestamp DATETIME NOT NULL,
+	    		FOREIGN KEY (applicant_id) REFERENCES applicants(applicant_id),
+	    		FOREIGN KEY (referral_id) REFERENCES referrals(referral_id),
+	    		FOREIGN KEY (schedule_id) REFERENCES schedules(schedule_id),
+	    		FOREIGN KEY (experience_id) REFERENCES experiences(experience_id),
+	    		FOREIGN KEY (material_id) REFERENCES materials(material_id)
+				)",
 
 		"CREATE TABLE referrals(
 			referral_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -259,12 +265,13 @@ function Recreate_DB(){
 			pre_text TEXT,
 			inside_text TEXT,
 			post_text TEXT,
-			section_id INT UNSIGNED NOT NULL REFERENCES FOREIGN KEY sections(section_id),
+			section_id INT UNSIGNED NOT NULL,
 			inner_arrange TINYINT UNSIGNED NOT NULL,
 			options_target VARCHAR(30),
 			is_required BOOLEAN NOT NULL,
 			field_is_active BOOLEAN NOT NULL,
-			response_target VARCHAR(30) NOT NULL
+			response_target VARCHAR(30) NOT NULL,
+    		FOREIGN KEY (section_id) REFERENCES sections(section_id)
 			)",
 
 		"CREATE TABLE sections(
