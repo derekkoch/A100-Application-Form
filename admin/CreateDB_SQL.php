@@ -160,6 +160,12 @@ function populateTables(){
 		(NULL, 'work_option', 'At least one full-time job in an office setting.', NULL, 'radio', '2', '1'),
 		(NULL, 'work_option', 'At least one part-time job in an office setting.', NULL, 'radio', '3', '1'),
 		(NULL, 'work_option', 'At least one part-time job of any other kind (retail, Starbucks, construction, etc.).', NULL, 'radio', '4', '1')
+		" ,
+		"INSERT INTO `roles` (`role_id`, `role_name`) VALUES
+		('1', 'user'),
+		('2', 'admin'),
+		('3', 'restricted user'),
+		('4', 'restricted admin')
 		"
 	);
 	return $statement;
@@ -167,18 +173,19 @@ function populateTables(){
 
 function Recreate_DB(){
 	$statement = array(
+		"CREATE TABLE roles(
+			role_id TINYINT(1) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+			role_name VARCHAR(45) NOT NULL
+			)",
+
 		"CREATE TABLE users(
 			user_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			first_name VARCHAR(30),
 			last_name VARCHAR(30),
 			email VARCHAR(50) NOT NULL,
 			password VARCHAR(50) NOT NULL,
-			role_id TINYINT(1)
-			)",
-
-		"CREATE TABLE roles(
-			role_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-			role_name VARCHAR(45) NOT NULL
+			role_id TINYINT(1) UNSIGNED,
+			FOREIGN KEY (role_id) REFERENCES roles(role_id)
 			)",
 
 		"CREATE TABLE applicants(
