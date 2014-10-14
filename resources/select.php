@@ -1,12 +1,12 @@
 <?php
 
 	include "AdminPage_SQL.php";
-	include "./admin/db_conn.php";
+	include "../admin/db_conn.php";
 
 	try{
-
 		$dbh = dbconn();
 		$applicationSql=$dbh->prepare(AdminTableSQL());
+		$applicationSql->execute();
 		$result = $applicationSql->fetchAll(PDO::FETCH_ASSOC);
 		$header = true;
 		echo "<table border='1'>";
@@ -42,6 +42,6 @@
 	} catch (Exception $e){
 		echo $e->getMessage();
 	} finally {
-		$dbh->dbclose();
+		$dbh=null;
 	}
 ?>

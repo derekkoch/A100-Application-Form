@@ -39,7 +39,7 @@
 			</div>
 
 			<!-- Use admin DB credentials -->
-			<?php include 'admin/cred_admin.php' ?>
+			<?php include "admin/db_conn.php" ?>
 
 			<!-- Select all applications table include statement -->
 			<?php include 'resources/select.php' ?>
