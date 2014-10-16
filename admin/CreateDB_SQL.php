@@ -17,7 +17,7 @@ function Drop_DB2(){
 
 function populateTables(){
 	$statement = array(
-		"INSERT INTO `cohorts` (`cohort_id`, `name`, `cohort_decription`, `cohort_is_active`) VALUES
+		"INSERT INTO `cohorts` (`cohort_id`, `cohort_name`, `cohort_decription`, `cohort_is_active`) VALUES
 		(NULL, 'Cohort 0 - Fall 2013', NULL, '0'), (NULL, 'Cohort 1 - Winter 2013/2014', NULL, '0'),
 		(NULL, 'Cohort 2 - Spring 2014', NULL, '0'), (NULL, 'Cohort 3 - Summer 2014', NULL, '1'),
 		(NULL, 'Cohort 4 - Fall 2014', NULL, '1'), (NULL, 'Cohort 5 - Winter 2014/2015', NULL, '1'),
@@ -268,7 +268,7 @@ function Recreate_DB(){
 
 		"CREATE TABLE cohorts(
 			cohort_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-			name VARCHAR(50) NOT NULL,
+			cohort_name VARCHAR(50) NOT NULL,
 			cohort_decription VARCHAR(250),
 			cohort_is_active BOOLEAN NOT NULL
 			)",
@@ -309,7 +309,6 @@ function Recreate_DB(){
 			material_id INT UNSIGNED NOT NULL,
 			is_complete BIT NOT NULL,
 			submit_timestamp DATETIME,
-			last_accessed_timestamp DATETIME NOT NULL,
     		FOREIGN KEY (applicant_id) REFERENCES applicants(applicant_id),
     		FOREIGN KEY (referral_id) REFERENCES referrals(referral_id),
     		FOREIGN KEY (schedule_id) REFERENCES schedules(schedule_id),
