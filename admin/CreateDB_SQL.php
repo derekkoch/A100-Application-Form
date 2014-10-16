@@ -307,7 +307,7 @@ function Recreate_DB(){
 			schedule_id INT UNSIGNED NOT NULL,
 			experience_id INT UNSIGNED NOT NULL,
 			material_id INT UNSIGNED NOT NULL,
-			is_complete BIT NOT NULL,
+			is_complete BOOLEAN NOT NULL,
 			submit_timestamp DATETIME,
     		FOREIGN KEY (applicant_id) REFERENCES applicants(applicant_id),
     		FOREIGN KEY (referral_id) REFERENCES referrals(referral_id),
