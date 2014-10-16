@@ -29,7 +29,7 @@
 	include "admin/db_conn.php";
 	$dbh = dbconn();
 
-	$dropdownSql = "SELECT name FROM cohorts WHERE cohort_is_active='1'";
+	$dropdownSql = "SELECT cohort_name FROM cohorts WHERE cohort_is_active='1'";
 	$results = $dbh->prepare($dropdownSql);
 	$results->execute();
 	$dropdownArray = $results->fetchAll(PDO::FETCH_ASSOC);
@@ -60,7 +60,7 @@
 					<select type="cohort" class="form-control" placeholder="Select cohort" name="cohortLogin" required>
 						<?php
 						// echo "<option>Select cohort</option>";
-						foreach($dropdownArray as $row){echo "<option value=" . $row['name'] . ">" . $row['name'] . "</option>";}
+						foreach($dropdownArray as $row){echo "<option value=" . $row['cohort_name'] . ">" . $row['cohort_name'] . "</option>";}
 						?>
 					</select>
 
