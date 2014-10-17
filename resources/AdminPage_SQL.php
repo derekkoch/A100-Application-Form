@@ -21,7 +21,7 @@
 
 	function AdminTableSQL() {
 		$statement = "SELECT applications.application_id, users.first_name, users.last_name, users.email, 
-		applications.cohort_name, applications.submit_timestamp, applications.is_complete 
+		applications.submit_timestamp, applications.is_complete 
 		FROM applications
 		INNER JOIN applicants ON applications.applicant_id=applicants.applicant_id
 		INNER JOIN users ON applicants.user_id=users.user_id";
