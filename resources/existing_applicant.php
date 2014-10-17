@@ -45,8 +45,8 @@
 						include "cred_int.php";
 
 							//Create connection
-						$formCon = mysqli_connect(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_FORM_DATABASE);
-						$appCon = mysqli_connect(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_APP_DATABASE);
+						//$formCon = mysqli_connect(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_FORM_DATABASE);
+						$appCon = mysqli_connect(HOST, USER, PASSWORD, DATABASE_NAME);
 						// Check connection
 						if (mysqli_connect_errno()) {
 							echo "Failed to connect to form_db MySQL: " . mysqli_connect_error();
@@ -57,25 +57,29 @@
 							ORDER BY sections.arrange"; 
 						$emailLogin = $_POST['emailLogin'];
 						$passwordLogin = $_POST['passwordLogin'];
-						$cohortLogin = $_POST['cohortLogin'];
+						//$cohortLogin = $_POST['cohortLogin'];
 						// echo $emailLogin . " " . $passwordLogin . " " . $cohortLogin;
 
 						//   !!! NOT MODULARIZED !!!
 						$backloadSql="SELECT * FROM applications   
 							INNER JOIN applicants ON applications.applicant_id = applicants.applicant_id 
-							INNER JOIN identity ON applications.identity_id = identity.identity_id
+						/*	INNER JOIN identity ON applications.identity_id = identity.identity_id */
+							INNER JOIN users ON applicants.user_id = users.user_id
 							INNER JOIN referrals ON applications.referral_id = referrals.referral_id
 							INNER JOIN schedules ON applications.schedule_id = schedules.schedule_id
 							INNER JOIN experiences ON applications.experience_id = experiences.experience_id
 							INNER JOIN materials ON applications.material_id = materials.material_id
-							WHERE identity.email = '" . $emailLogin . "' 
-								AND identity.password = '" . $passwordLogin . "' 
-								AND applications.cohort_name = '" . $cohortLogin . "'";
-
-						$qstnArray = mysqli_query($formCon, $qstnSql);
+							
+						/*	WHERE identity.email = '" . $emailLogin . "' */
+							WHERE users.email = '" . $emailLogin . "' 
+								AND users.password = '" . $passwordLogin . "'";
+						/*  AND applications.cohort_name = '" . $cohortLogin . "'                                          */
+						/*$qstnArray = mysqli_query($formCon, $qstnSql); */
+						$qstnArray = mysqli_query($appCon, $qstnSql);
 						$backloadArray = mysqli_query($appCon, $backloadSql);
 						$backloadNumRows = mysqli_num_rows($backloadArray);
 						$backloadRow = mysqli_fetch_array($backloadArray);
+						print_r($backloadRow);
 								if($backloadNumRows<1){
 									echo "No Application has been created for the provided email address, password and selected Cohort";
 									echo "<p><a href='../index.php'>Click here to go to gateway</a></p>";
@@ -91,7 +95,8 @@
 							}
 
 							$fieldName = $row['field_name'];  //variable to hold DB name content/reduce need for " and '
-							if($fieldName=='password' || $fieldName=='cohort_name' || $fieldName=='email'){
+							/*if($fieldName=='password' || $fieldName=='cohort_name' || $fieldName=='email'){*/
+								if($fieldName=='password' || $fieldName=='email'){
 
 							}else{
 									if($arrangeCounter<$row['arrange'])
@@ -129,9 +134,10 @@
 										$insideText = $row['inside_text'];
 									}
 
-									if($fieldName=='password' || $fieldName=='cohort_name' || $fieldName=='email'){
+									/*if($fieldName=='password' || $fieldName=='cohort_name' || $fieldName=='email'){*/
+										if($fieldName=='password' || $fieldName=='email'){
 										echo "<input type='hidden' name='password' value='".$passwordLogin."'>";
-										  echo "<input type='hidden' name='cohort_name' value='".$cohortLogin."'>";
+										  /*echo "<input type='hidden' name='cohort_name' value='".$cohortLogin."'>";*/
 										  echo "<input type='hidden' name='email' value='".$emailLogin."'>";
 									}else{
 										if($row['options_target']==NULL)
@@ -151,7 +157,8 @@
 											//handles multiple choice options reading from question_options table
 											$optnSql = "SELECT * FROM fields INNER JOIN question_options WHERE fields.field_name = '$fieldName' 
 												AND question_options.field_name='$fieldName'";
-											$optnArray = mysqli_query($formCon, $optnSql);
+											/*$optnArray = mysqli_query($formCon, $optnSql);*/
+											$optnArray = mysqli_query($appCon, $optnSql);
 
 											while($optnRow = mysqli_fetch_array($optnArray)){
 												$optnInputType = $optnRow['input_type'];
@@ -178,16 +185,15 @@
 											//echo "$optnOldContent";
 											$targetTable = $row['options_target'];
 											$dropDownSql = "SELECT * FROM $targetTable";
-											$dropDownArray = mysqli_query($formCon,$dropDownSql);
+											//$dropDownArray = mysqli_query($formCon,$dropDownSql);
+											$dropDownArray = mysqli_query($appCon,$dropDownSql);
+
 											echo "</br>";
 											echo "<select name='$fieldName'>";
-											echo "<option>Select a value</option>";
+											//echo "<option>Select a value</option>";
 												while($dropDownRow = mysqli_fetch_array($dropDownArray)){
 													$dropDownValue = $dropDownRow['name'];
 													echo "<option value='$dropDownValue' ";
-											/*		if($optnOldContent==$dropDownValue)
-													{
-														echo "selected";}else{}*/
 													echo ">$dropDownValue</option>";
 												}
 											echo "</select>";
@@ -205,7 +211,7 @@
 									}
 								}
 							}
-
+								print_r($_POST);
 					?>
 
 					<div class="row form">

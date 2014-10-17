@@ -1,60 +1,53 @@
 <?php
-	include "db_conn.php";
+	include "cred_int.php";
+	print_r($_POST);
+	$appCon = mysqli_connect(HOST,USER, PASSWORD, DATABASE_NAME);
+	//$formCon = mysqli_connect(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_FORM_DATABASE);
 
-	$dbh=dbconn();
+	if(mysqli_connect_errno()){
+		echo "Failed to connect to MySQL: " . mysqli_connect_error();
+	}
 
-	//test email address & cohort
-	$cohortCheck = "Cohort 0 - Fall 2013";
-	$emailCheck = "123@gmail.com";
+	//check for duplicates by applicant ID and cohort content
+	$emailCheck = $_POST['email'];
+	//$cohortCheck = $_POST['cohort_name'];
+	//$sqlDup = "SELECT * FROM applications INNER JOIN identity ON applications.identity_id = identity.identity_id 
+		//WHERE identity.email = '$emailCheck' AND applications.cohort_name = '$cohortCheck'";
 
-	$sqlStmt = "SELECT * FROM applications INNER JOIN users ON applications.applicant_id = user.user_id
-		WHERE user.email = '$emailCheck' AND applications.cohort_name = '$cohortCheck'";
+		$sqlDup = "SELECT * FROM applications, applicants, users WHERE applications.applicant_id = applicnt.applicant_id 
+		AND users.user_id = applicants_user_id AND users.email = '$emailCheck'";
 
+	$dup = mysqli_query($appCon, $sqlDup);  //runs sql code and gets possible duplicates
 
-	//runs sql code and gets possible result(s)
-	$result = $dbh->prepare($sqlStmt);
-	$result->execute();
-
-
-
-	$results_contents =$result->fetchAll(PDO::FETCH_ASSOC);
-	$row_count = sizeof($result);  //counts the number of rows returned
-
-	echo $row_count.'<br>'.'<br>'.'<br>';
+	$dupContent = mysqli_fetch_array($dup);
+	$dupCount = mysqli_num_rows($dup);  //counts total duplicate values
 
 	//checks for duplicates, if greater than 1, throw dup record and stop else write to DB
-	if($row_count >=1){
+	if($dupCount >1){
 		//echo "Someone has enrolled in: " . $_POST['cohort_name'] . " with the provided email address already, thank you for your interest.";
+		  echo "Someone has enrolled with the address: " . $_POST['email'] . " please continue your application. or contact us for more info.";
+	}else{
 
-		echo "Someone has enrolled in: " . $cohortCheck . " with the provided email address already, thank you for your interest.";
-	}
-	else{
-		$malformedInput = 0;
-		$sqlStmt2 = "SELECT field_name, is_required FROM fields";
-
-	 	$result2 = $dbh->prepare($sqlStmt2);
-	 	$result2 -> execute();
-	 	$result_array = $result2->fetchAll();
-
-	 	//what is $required?
-	 	//while($required = mysqli_fetch_array($reqArray))
-	 	while($required = mysqli_fetch_array($result_array))
- 		{
+	 	//$reqArray = mysqli_query($formCon, "SELECT field_name, is_required FROM fields");
+	 	$reqArray = mysqli_query($appCon, "SELECT field_name, is_required FROM fields");
+	 	$malformedInput = 0;
+	 	while($required = mysqli_fetch_array($reqArray))
+	 		{
 	 		$tempName = $required['field_name'];
 	 		if($required['is_required']==1 && $_POST[$tempName]==NULL){
 	 			echo "'" . $tempName . "' is a required field, you submitted: " . $_POST['$tempName'] . " please enter a correct value </br>";
 	 			$malformedInput = 1;
 	 			}
- 		}
-
- 		if($malformedInput==1){
-			echo "<a href='../index.php'>Click Back</a>";
- 			exit;
- 		}
+	 		}
+	 		if($malformedInput==1){
+				echo "<a href='../index.php'>Click Back</a>";
+	 			exit;
+	 		}
 
 		$applicationSqlInsert = "NULL";
 		//needs to be modularized to read from DB
-		$tableInfo = array('applicants', 'identity', 'referrals','schedules', 'experiences', 'materials');
+		//$tableInfo = array('applicants', 'identity', 'referrals','schedules', 'experiences', 'materials');
+		$tableInfo = array('applicants', 'users', 'referrals','schedules', 'experiences', 'materials');
 		for($x=0; $x<count($tableInfo); $x++)
 			{
 			$query = "SELECT * from " . $tableInfo[$x];
@@ -67,7 +60,7 @@
 			    $submitSqlRecord = "";
 			    $submitSql = "";
 			    $sqlFirst = 0;
-
+			    
 			    //start modifying content for insertion
 			    $replacePrimaryKey = array();
 			    while ($finfo = mysqli_fetch_field($result)) {
@@ -79,7 +72,7 @@
 
 			    	//retrieves column name and table name
 			    	$colName = $finfo->name;
-			    	$submitSqlTable = $finfo->table;
+			    	$submitSqlTable = $finfo->table;		    	
 
 			        //file submission, checks if field names reference resume/cover letter !! not modularized  !!
 			        if($colName=="resume" || $colName=="cover_letter"){
@@ -100,7 +93,7 @@
 
 			        if($submitSqltable!="applications"){
 				        	//first check if there is not submitted value, like for keys in a completed form
-				        if($_POST[$colName]==NULL){
+				        if($_POST[$colName]==NULL){  
 				        	//file submission as no submitted value sent via normal ways
 				        	//if object name is resume or cover letter write file path to DB
 				        	if($colName=="resume" || $colName=="cover_letter"){
@@ -119,7 +112,7 @@
 				        		else{
 				        			$submitSql = $submitSql . $colName . "='" . $fileLoc . "'";
 				        		}
-
+				        			
 				        	}else
 				        	{
 				        		// writes a NULL value like for PK
@@ -143,7 +136,7 @@
 				        if($submitSql==""){
 				        	$submitSql = $submitSql . $colName . "='" . $_POST[$colName] . "'";
 				        }else{$submitSql = $submitSql . ", " . $colName . "='" . $_POST[$colName] . "'";}
-
+				        
 			        }
 			    }
 
@@ -188,7 +181,7 @@
 				}
 
 				$submitSql = "is_complete = '" . $status . "'";
-				$submitFinSql = "UPDATE `applications_db`.`applications` SET " . $submitSql
+				$submitFinSql = "UPDATE `applications_db`.`applications` SET " . $submitSql 
 					. " WHERE applications.application_id=".$dupContent['application_id'];
 					//echo $submitFinSql;
 				if (mysqli_query($appCon, $submitFinSql)){
@@ -202,7 +195,7 @@
 
 	}
 
-	dbclose($dbh);
+	mysql_close($con);
 ?>
 
 <html lang="en">
