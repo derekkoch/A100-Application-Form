@@ -1,6 +1,13 @@
-This is the LiNeaR Solutions implementation of the A100 Apprentice Application form, for the Spring 2014 cohort of the A100 program.
+This is the most current repo for the A100 Apprentice Application form, currently under development by the Late Summer 2014 Cohort of the A100 Program (see Apprentice100.com for details).
 
-The team, LiNeaR Solutions, is comprised of:
+Team United Resolutions is comprised of:
+[Paul Burinda](https://github.com/Paul-Burinda)
+[Mark Fisher](https://github.com/mfishera100)
+[Yan Ren](https://github.com/flymocha)
+[Taiwo Togun](https://github.com/ttogun)
+[UtibeAbasi Udo-Okon](https://github.com/BarukhOr)
+
+The initial foundation of this application was built in the Spring 2014 Cohort by Team LiNeaR Solutions:
 [Solomon Li](https://github.com/soloub)
 [Thaddeus Ng](https://github.com/ThaddeusANg)
 [Scott Russell](https://github.com/AmundsenJunior)

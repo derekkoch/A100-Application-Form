@@ -1,11 +1,11 @@
 <?php
 
-	include "cred_int.php";
-	include "SQL_Statement.php";
+	include "AdminPage_SQL.php";
+	include "../admin/db_conn.php";
 
 	try{
-		$db = new PDO("mysql:dbname=".DB_APP_DATABASE.";host=".DB_HOST, DB_USERNAME, DB_PASSWORD);
-		$applicationSql=$db->prepare(AdminTableSQL());
+		$dbh = dbconn();
+		$applicationSql=$dbh->prepare(AdminTableSQL());
 		$applicationSql->execute();
 		$result = $applicationSql->fetchAll(PDO::FETCH_ASSOC);
 		$header = true;
@@ -42,6 +42,6 @@
 	} catch (Exception $e){
 		echo $e->getMessage();
 	} finally {
-		$db = null;
+		$dbh=null;
 	}
 ?>

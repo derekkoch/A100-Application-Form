@@ -2,7 +2,11 @@
 
 	function ExportCSVStatement() {
 		$statement = "SELECT users.user_id, users.first_name, users.last_name, users.email, applicants.major, 
+<<<<<<< HEAD
 		applicants.school_id, applicants.graduation_date, applicants.street_address, applicants.city, applicants.state_id,
+=======
+		applicants.school_name, applicants.graduation_date, applicants.street_address, applicants.city, applicants.state,
+>>>>>>> 16cf43a985ce5e5d7b60d7062d9a8dfbaebc9a56
 		applicants.zipcode, applicants.phone_number, applicants.linkedin, applicants.portfolio, applicants.age_check,
 		applicants.legal_status, schedules.weekly_hours, schedules.commitments, experiences.programming_option,
 		experiences.work_option, experiences.job_title, experiences.front_end_experience, experiences.lamp_stack_experience,
