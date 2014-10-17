@@ -3,41 +3,34 @@
 
 	$dbh=dbconn();
 
-	//test email address & cohort
-	$cohortCheck = "Cohort 0 - Fall 2013";
+	$cohortCheck = "Cohort 1 - Winter 2013/2014";
 	$emailCheck = "123@gmail.com";
+	$tempName = "John";
 
 	$sqlStmt = "SELECT * FROM applications INNER JOIN users ON applications.applicant_id = user.user_id
 		WHERE user.email = '$emailCheck' AND applications.cohort_name = '$cohortCheck'";
 
-
-	//runs sql code and gets possible result(s)
 	$result = $dbh->prepare($sqlStmt);
 	$result->execute();
 
-
-
+	$row_count = sizeof($result);
 	$results_contents =$result->fetchAll(PDO::FETCH_ASSOC);
-	$row_count = sizeof($result);  //counts the number of rows returned
 
-	echo $row_count.'<br>'.'<br>'.'<br>';
 
-	//checks for duplicates, if greater than 1, throw dup record and stop else write to DB
-	if($row_count >=1){
-		//echo "Someone has enrolled in: " . $_POST['cohort_name'] . " with the provided email address already, thank you for your interest.";
-
-		echo "Someone has enrolled in: " . $cohortCheck . " with the provided email address already, thank you for your interest.";
+	if($row_count > 1){
+		 echo "Someone has enrolled in: " .$cohortCheck . " with the provided email address already, thank you for your interest. ";
 	}
-	else{
-		$malformedInput = 0;
-		$sqlStmt2 = "SELECT field_name, is_required FROM fields";
+	else {
+		$sqlStmt = "SELECT field_name, is_required FROM fields";
+		$result_array = $dbh->prepare($sqlStmt);
+		$result_array ->execute();
+		echo "size of result_array: ".sizeof($result_array);
 
-	 	$result2 = $dbh->prepare($sqlStmt2);
-	 	$result2 -> execute();
-	 	$result_array = $result2->fetchAll();
 
-	 	//what is $required?
-	 	//while($required = mysqli_fetch_array($reqArray))
+
+	}
+
+
 	 	while($required = mysqli_fetch_array($result_array))
  		{
 	 		$tempName = $required['field_name'];
@@ -200,7 +193,7 @@
 
 		mysqli_free_result($result);
 
-	}
+
 
 	dbclose($dbh);
 ?>

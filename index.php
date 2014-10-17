@@ -29,10 +29,6 @@
 	include "admin/db_conn.php";
 	$dbh = dbconn();
 
-	$dropdownSql = "SELECT cohort_name FROM cohorts WHERE cohort_is_active='1'";
-	$results = $dbh->prepare($dropdownSql);
-	$results->execute();
-	$dropdownArray = $results->fetchAll(PDO::FETCH_ASSOC);
 	?>
 
 
@@ -57,12 +53,9 @@
 					<h3 class="form-signin-heading">Returning Applicants</h3>
 					<input type="email" class="form-control" placeholder="Email address" name="emailLogin" required autofocus>
 					<input type="password" class="form-control" placeholder="Password" name="passwordLogin" required>
-					<select type="cohort" class="form-control" placeholder="Select cohort" name="cohortLogin" required>
-						<?php
-						// echo "<option>Select cohort</option>";
-						foreach($dropdownArray as $row){echo "<option value=" . $row['cohort_name'] . ">" . $row['cohort_name'] . "</option>";}
-						?>
-					</select>
+
+
+
 
 					<button class="btn btn-lg btn-primary btn-block" type="submit" name="login" value="login">
 						Resume application now.</button>

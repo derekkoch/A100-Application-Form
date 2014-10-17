@@ -4,23 +4,16 @@
 <?php
 	echo '<p>A100 Application Form</p>';
 	// select.php Script to execute from index.php to view the contents of test_db.Apprentices2
-
-	include "cred_int.php";
+	include "db_conn.php";
 
 	//Create connection
-	$con = mysqli_connect(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
-	// Check connection
-	if (mysqli_connect_errno()) {
-		echo "Failed to connect to MySQL: " . mysqli_connect_error();
-	}
-
+	$con = dbconn();
 
 	//get variable
-	$email = $_POST["emailLogin"];  //receives content from email field in gateway page
-	$password =$_POST["passwordLogin"];  //receives content from password field in gateway page
-	echo "<br/>email=".$email;/// This echo clause is for debug.
-	$result = mysqli_query($con,"SELECT * FROM Apprentices2 Where email='$email'");  //sql where statements must be wrapped in apostrophe. If $email exits, return the whole row data.
-	// var_dump($result);// This echo clause is for debug.
+	$email = $_POST["emailLogin"];
+	$password =$_POST["passwordLogin"];
+
+	$result = $dbh->prepare("Select * From users where email =".$email);
 	$row = mysqli_fetch_assoc($result);
 	 // var_dump($row);// This echo clause is for debug.
 	if ($row) {//If finding the user record exists, next step judge the password is whether correct or not.
@@ -33,7 +26,7 @@
 			if ($row['status']==1) {
 
 				echo "<div>This application has been submitted already and is no longer available for editting.";
-				/*echo "<table border='1'>//show the user's information derectly
+				echo "<table border='1'>//show the user's information derectly
 					<tr>
 					<th>PID</th>
 					<th>First Name</th>
@@ -53,7 +46,7 @@
 					}elseif($row['status']==1){
 						echo "<td>complete</td>";
 					}
-				echo "</tr>";*/
+				echo "</tr>";
 				mysqli_close($con);
 				echo '<p><a href="../index.php">Click here to go to gateway</a></p>';
 				echo "<p><a href=\"select.php?email=$email\">Click here to view table</a></p>";
