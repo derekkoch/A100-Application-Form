@@ -40,9 +40,13 @@
 					$appCon = mysqli_connect(DB_HOST,DB_USERNAME, DB_PASSWORD, DB_APP_DATABASE);
 					$formCon = mysqli_connect(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_FORM_DATABASE);
 
+
 					if(mysqli_connect_errno()){
 						echo "Failed to connect to MySQL: " . mysqli_connect_error();
 					}
+
+					//print_r($_POST);
+
 
 					//check for duplicates by applicant ID and cohort content
 					$sqlDup = "SELECT * FROM applications INNER JOIN identity 

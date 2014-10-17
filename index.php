@@ -34,16 +34,8 @@
 		<!-- PHP to pull Cohort Dropdown Options -->
 		<?php
 			include "resources/cred_int.php";
-
-			$formCon = mysqli_connect(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_FORM_DATABASE);
-				// Check connection
-				if (mysqli_connect_errno()) {
-					echo "Failed to connect to form_db MySQL: " . mysqli_connect_error();
-				}
-
-			$dropdownSql = "SELECT name FROM cohorts WHERE cohort_is_active='1'";
-			$dropdownArray = mysqli_query($formCon, $dropdownSql);
 		?>
+
 
 
 		<div class="container-fluid">
@@ -64,22 +56,25 @@
 			<div class="row form-signin">
 
 				<form action="resources/existing_applicant.php" method="post" class="form-signin" role="form">
-			        <h3 class="form-signin-heading">Returning Applicants</h3>
-			        <input type="email" class="form-control" placeholder="Email address" name="emailLogin" required autofocus>
-			        <input type="password" class="form-control" placeholder="Password" name="passwordLogin" required>
-			        <select type="cohort" class="form-control" placeholder="Select cohort" name="cohortLogin" required>
-			        	<?php
-			        		// echo "<option>Select cohort</option>";
-			        		while($row=mysqli_fetch_array($dropdownArray))
-								{
-									echo "<option value='" . $row['name'] . "'>" . $row['name'] . "</option>";
-								}
+
+					<h3 class="form-signin-heading">Returning Applicants</h3>
+					<input type="email" class="form-control" placeholder="Email address" name="emailLogin" required autofocus>
+					<input type="password" class="form-control" placeholder="Password" name="passwordLogin" required>
+					<!--
+					<select type="cohort" class="form-control" placeholder="Select cohort" name="cohortLogin" required>
+
+						<?php
+						// echo "<option>Select cohort</option>";
+						//foreach($dropdownArray as $row){echo "<option value=" . $row['cohort_name'] . ">" . $row['cohort_name'] . "</option>";}
 						?>
 					</select>
+					-->
+					<button class="btn btn-lg btn-primary btn-block" type="submit" name="login" value="login">
+						Resume application now.</button>
+					</form>
 
-			        <button class="btn btn-lg btn-primary btn-block" type="submit" name="login" value="login">
-			        	Resume application now.</button>
-			    </form>
+				</div>
+
 
 			</div>
 
