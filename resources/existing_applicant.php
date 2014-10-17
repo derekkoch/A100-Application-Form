@@ -38,76 +38,75 @@
 			</div>
 		</div>
 
-		<div class="row">
-			<form action="replace.php" method="post" enctype="multipart/form-data">
 
-				<?php
-				//include "cred_int.php";
-				include "db_conn.php";
+			<div class="row">
+				<form action="replace.php" method="post" enctype="multipart/form-data">
 
-				$dbh = dbconn();
+					<?php
+						include "cred_int.php";
 
-				//sorts content by section on sections.arrange
-				$qstnSql="SELECT * FROM fields INNER JOIN sections ON fields.section_id=sections.section_id
-				ORDER BY sections.arrange";
-				$emailLogin = $_POST['emailLogin'];
-				$passwordLogin = $_POST['passwordLogin'];
-				$cohortLogin = $_POST['cohortLogin'];
-				// echo $emailLogin . " " . $passwordLogin . " " . $cohortLogin;
+							//Create connection
+						//$formCon = mysqli_connect(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_FORM_DATABASE);
+						$appCon = mysqli_connect(HOST, USER, PASSWORD, DATABASE_NAME);
+						// Check connection
+						if (mysqli_connect_errno()) {
+							echo "Failed to connect to form_db MySQL: " . mysqli_connect_error();
+						}
 
-				//   !!! NOT MODULARIZED !!!
-				$backloadSql="SELECT * FROM applications
-				INNER JOIN applicants ON applications.applicant_id = applicants.applicant_id
-				INNER JOIN identity ON applications.identity_id = identity.identity_id
-				INNER JOIN referrals ON applications.referral_id = referrals.referral_id
-				INNER JOIN schedules ON applications.schedule_id = schedules.schedule_id
-				INNER JOIN experiences ON applications.experience_id = experiences.experience_id
-				INNER JOIN materials ON applications.material_id = materials.material_id
-				WHERE identity.email = '" . $emailLogin . "'
-				AND identity.password = '" . $passwordLogin . "'
-				AND applications.cohort_name = '" . $cohortLogin . "'";
+						//sorts content by section on sections.arrange
+						$qstnSql="SELECT * FROM fields INNER JOIN sections ON fields.section_id=sections.section_id
+							ORDER BY sections.arrange";
+						$emailLogin = $_POST['emailLogin'];
+						$passwordLogin = $_POST['passwordLogin'];
+						//$cohortLogin = $_POST['cohortLogin'];
+						// echo $emailLogin . " " . $passwordLogin . " " . $cohortLogin;
 
-				//$qstnArray = mysqli_query($formCon, $qstnSql);
-				$qstnArray = $dbh->prepare($qstnSql);
-				$qstnArray->execute();
+						//   !!! NOT MODULARIZED !!!
+						$backloadSql="SELECT * FROM applications
+							INNER JOIN applicants ON applications.applicant_id = applicants.applicant_id
+						/*	INNER JOIN identity ON applications.identity_id = identity.identity_id */
+							INNER JOIN users ON applicants.user_id = users.user_id
+							INNER JOIN referrals ON applications.referral_id = referrals.referral_id
+							INNER JOIN schedules ON applications.schedule_id = schedules.schedule_id
+							INNER JOIN experiences ON applications.experience_id = experiences.experience_id
+							INNER JOIN materials ON applications.material_id = materials.material_id
 
-				//$backloadArray = mysqli_query($appCon, $backloadSql);
-				$backloadArray = $dbh->prepare($backloadSql);
-				$backloadArray->execute();
-
-				$backloadNumRows = mysqli_num_rows($backloadArray);
-				$backloadRow = mysqli_fetch_array($backloadArray);
-
-				if($backloadNumRows<1){
-					echo "No Application has been created for the provided email address, password and selected Cohort";
-					echo "<p><a href='../index.php'>Click here to go to gateway</a></p>";
-					exit;
-				}
-				$arrangeCounter =0;
-				while($row=mysqli_fetch_array($qstnArray))
-				{
-				//checks if moving to a new section, if counter is less than section.arrange, print header and body if available
-					if($row['is_complete']==1){
-						echo "This application has been completed";
-						echo "<p><a href='../index.php'>Click here to go to gateway</a></p>";
-					}
-
-					$fieldName = $row['field_name'];  //variable to hold DB name content/reduce need for " and '
-
-					if($fieldName=='password' || $fieldName=='cohort_name' || $fieldName=='email'){}
-						else{
-						if($arrangeCounter<$row['arrange'])
+						/*	WHERE identity.email = '" . $emailLogin . "' */
+							WHERE users.email = '" . $emailLogin . "'
+								AND users.password = '" . $passwordLogin . "'";
+						/*  AND applications.cohort_name = '" . $cohortLogin . "'                                          */
+						/*$qstnArray = mysqli_query($formCon, $qstnSql); */
+						$qstnArray = mysqli_query($appCon, $qstnSql);
+						$backloadArray = mysqli_query($appCon, $backloadSql);
+						$backloadNumRows = mysqli_num_rows($backloadArray);
+						$backloadRow = mysqli_fetch_array($backloadArray);
+						print_r($backloadRow);
+								if($backloadNumRows<1){
+									echo "No Application has been created for the provided email address, password and selected Cohort";
+									echo "<p><a href='../index.php'>Click here to go to gateway</a></p>";
+									exit;
+							}
+						$arrangeCounter =0;
+						while($row=mysqli_fetch_array($qstnArray))
 							{
-								if($row['pre_text']==NULL && $row['post_text']==NULL)
+							//checks if moving to a new section, if counter is less than section.arrange, print header and body if available
+							if($row['is_complete']==1){
+								echo "This application has been completed";
+								echo "<p><a href='../index.php'>Click here to go to gateway</a></p>";
+							}
+
+							$fieldName = $row['field_name'];  //variable to hold DB name content/reduce need for " and '
+							/*if($fieldName=='password' || $fieldName=='cohort_name' || $fieldName=='email'){*/
+								if($fieldName=='password' || $fieldName=='email'){
+
+							}else{
+									if($arrangeCounter<$row['arrange'])
+
 								{
 									echo "<h3>" . $row['section_name'] . "*</h3>";
 								}else
 								{
-									echo "<h3>" . $row['section_name'] . "</h3>";
-								}
-								echo "<b>" . $row['section_description'] . "</b>";
-								$arrangeCounter = $row['arrange'];
-							}
+
 				}
 
 				if($row['is_active']==x){  //flag functionality not working right now due to ambiguous column headers
@@ -218,6 +217,10 @@
 				Save Application to Complete Later</button>
 			</div>
 		</div>
+
+								print_r($_POST);
+					?>
+
 
 	</form>
 
