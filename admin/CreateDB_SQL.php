@@ -100,7 +100,6 @@ function populateTables(){
 		(NULL, 'school_id', NULL, 'Please list your most recent educational institution, your major, and the date of your graduation (or anticipated graduation).', 'Select School', 'School', '2', '1', 'schools', '1', '1', 'applicants'),
 		(NULL, 'major', NULL, NULL, NULL, 'Major', '2', '1', NULL, '1', '1', 'applicants'),
 		(NULL, 'graduation_date', NULL, NULL, '[Month], [Year]', 'Graduation Date', '2', '1', NULL, '1', '1', 'applicants'),
-		(NULL, 'cohort_name', NULL, 'What cohort are you applying for?', 'Select Cohort', 'The training period will last ~2 months and you will be expected to meet at least twice per week. You will be eligible for paid internships with our Partner Companies immediately afterward. (NOTE: Cohort 2 is already in progress for the 2014 year)', '2', '4', 'cohorts', '1', '1', 'applications'),
 		(NULL, 'street_address', NULL, 'Address', NULL, 'Street Address', '2', '5', NULL, '1', '1', 'applicants'),
 		(NULL, 'city', NULL, NULL, NULL, 'City', '2', '6', NULL, '1', '1', 'applicants'),
 		(NULL, 'state', NULL, NULL, NULL, 'State', '2', '7', 'states', '1', '1', 'applicants'),
@@ -266,12 +265,6 @@ function Recreate_DB(){
 			school_is_active BOOLEAN NOT NULL
 			)",
 
-		"CREATE TABLE cohorts(
-			cohort_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-			cohort_name VARCHAR(50) NOT NULL,
-			cohort_decription VARCHAR(250),
-			cohort_is_active BOOLEAN NOT NULL
-			)",
 
 		"CREATE TABLE question_options(
 			q_option_id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -302,7 +295,6 @@ function Recreate_DB(){
 		"CREATE TABLE applications(
 			application_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			applicant_id INT NOT NULL,
-			cohort_name varchar(150) NOT NULL,
 			referral_id INT UNSIGNED NOT NULL,
 			schedule_id INT UNSIGNED NOT NULL,
 			experience_id INT UNSIGNED NOT NULL,
