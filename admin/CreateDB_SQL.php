@@ -96,7 +96,7 @@ function populateTables(){
 		(NULL, 'first_name', NULL, 'Name', NULL, 'First Name', '1', '1', NULL, '1', '1', 'identity'),
 		(NULL, 'last_name', NULL, NULL, NULL, 'Last Name', '1', '1', NULL, '1', '1', 'identity'),
 		(NULL, 'email', NULL, 'Email', 'Use the email address you check most frequently, as this will be how we notify you of acceptance into the program.', NULL, '1', '3', NULL, '1', '1', 'identity'),
-		(NULL, 'password', NULL, 'Password', NULL, NULL, '1', '3', NULL, '1', '1', 'identity'),
+		(NULL, 'password', NULL, 'Password', NULL, NULL, '1', '3', 'password', '1', '1', 'identity'),
 		(NULL, 'school_id', NULL, 'Please list your most recent educational institution, your major, and the date of your graduation (or anticipated graduation).', 'Select School', 'School', '2', '1', 'schools', '1', '1', 'applicants'),
 		(NULL, 'major', NULL, NULL, NULL, 'Major', '2', '1', NULL, '1', '1', 'applicants'),
 		(NULL, 'graduation_date', NULL, NULL, '[Month], [Year]', 'Graduation Date', '2', '1', NULL, '1', '1', 'applicants'),
