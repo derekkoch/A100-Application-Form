@@ -27,13 +27,9 @@
 	<!-- PHP to pull Cohort Dropdown Options -->
 	<?php
 	include "admin/db_conn.php";
-	$dbh = dbconn();
-
-
-		<!-- PHP to pull Cohort Dropdown Options -->
-		<?php
-			include "resources/cred_int.php";
-		?>
+	$dbh = dbconn();	
+	include "resources/cred_int.php";
+	?>
 
 
 
