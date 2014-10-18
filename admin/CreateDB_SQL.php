@@ -190,7 +190,7 @@ function Recreate_DB(){
 		"CREATE TABLE applicants(
 			applicant_id INT  NOT NULL AUTO_INCREMENT PRIMARY KEY,
 			user_id INT NOT NULL,
-			school_id VARCHAR(150),
+			school_name VARCHAR(150),
 			major VARCHAR(50),
 			graduation_date VARCHAR(30),
 			street_address VARCHAR(100),
@@ -313,7 +313,7 @@ function Recreate_DB(){
 
 
 function populatePostArray(){
-	/*$statement= Array (
+	$statement= Array (
 		[first_name] => Paul
 		[last_name] => Burinda
 		[email] => paul.burinda@gmail.com
@@ -354,7 +354,7 @@ function populatePostArray(){
 		[other_experience] => Hire me for relevant info
 		[reference_list] => Joe Smith
 		[additional_info] => Do it!
-		[submit] => submit );*/
+		[submit] => submit )
 
 
 }
