@@ -79,7 +79,7 @@
 						$backloadArray = mysqli_query($appCon, $backloadSql);
 						$backloadNumRows = mysqli_num_rows($backloadArray);
 						$backloadRow = mysqli_fetch_array($backloadArray);
-						print_r($backloadRow);
+						//print_r($backloadRow);
 								if($backloadNumRows<1){
 									echo "No Application has been created for the provided email address, password and selected Cohort";
 									echo "<p><a href='../index.php'>Click here to go to gateway</a></p>";
@@ -113,10 +113,10 @@
 									}
 							}
 
-							//if($row['is_active']==x){  //flag functionality not working right now due to ambiguous column headers
-							//	echo "is active flag:" . $row['is_active'];
-							//	}else
-								
+							if($row['is_active']==x){  //flag functionality not working right now due to ambiguous column headers
+								echo "is active flag:" . $row['is_active'];
+								}else
+								{
 									if($row['is_required']==1 && $row['post_text'] ==NULL && $row['pre_text']!= NULL){
 										echo "<h4>".$row['pre_text'] . "*</h4>";
 									}else{
@@ -135,10 +135,10 @@
 									}
 
 									/*if($fieldName=='password' || $fieldName=='cohort_name' || $fieldName=='email'){*/
-								   if($fieldName=='password' || $fieldName=='email'){
+										if($fieldName=='password' || $fieldName=='email'){
 										echo "<input type='hidden' name='password' value='".$passwordLogin."'>";
 										  /*echo "<input type='hidden' name='cohort_name' value='".$cohortLogin."'>";*/
-									    echo "<input type='hidden' name='email' value='".$emailLogin."'>";
+										  echo "<input type='hidden' name='email' value='".$emailLogin."'>";
 									}else{
 										if($row['options_target']==NULL)
 										{
