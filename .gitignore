@@ -3,3 +3,6 @@ Thumbs.db
 admin/cred_ext.php
 admin/cred_admin.php
 resources/cred_user.php
+*/uploads
+admin/dev
+resources/cred_int.php
