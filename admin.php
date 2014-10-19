@@ -16,16 +16,19 @@
 	<body>
 
 		<div class="container-fluid">
-
 			<div class="row">
-				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<h1>Admin Functionality</h1>
+				<h1>Admin Functionality</h1>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> 
+					<?php include "admin/db_conn.php" ?>
+
+					<?php include 'resources/select.php' ?>
 				</div>
 			</div>
-			<?php include "admin/db_conn.php" ?>
-
-			<?php include 'resources/select.php' ?>
-
 		</div>
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
