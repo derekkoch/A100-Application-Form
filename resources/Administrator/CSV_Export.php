@@ -1,7 +1,7 @@
 <?php
 
 	include "AdminPage_SQL.php";
-	include "../admin/db_conn.php";
+	include "../../admin/db_conn.php";
 
 	try{
 		$dbh = dbconn();
@@ -26,8 +26,9 @@
 				}
 				fputcsv($CSVFile, $row, ',');
 			}
-			header('Content-Type: application/csv');
+			header('Content-Type: application/octet-stream');
 	    	header('Content-Disposition: attachement; filename="'.$filename.'";');
+	    	header("Pragma: no-cache");
 		}
 	} catch(PDOException $e){
 		echo "Connection Failed:  ".$e->getMessage();
