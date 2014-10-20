@@ -14,7 +14,7 @@ The initial foundation of this application was built in the Spring 2014 Cohort b
 
 ## .gitignore
 
-`.gitignore` currently excludes the `.DS_Store` and `Thumbs.db` files from Mac and Windows file systems. `admin/cred_ext.php` excludes the external administrative MySQL credentials. To build `cred_ext.php`, consult one of the LiNeaR Solutions team for the credentials, and create the file with the following information:
+`.gitignore` currently excludes the `.DS_Store` and `Thumbs.db` files from Mac and Windows file systems. `admin/cred_ext.php` excludes the external administrative MySQL credentials. To build `cred_admin.php`, consult one of the LiNeaR Solutions team for the credentials, and create the file with the following information:
 ```
 <?php
     DEFINE('DB_USERNAME', 'username');
@@ -24,7 +24,7 @@ The initial foundation of this application was built in the Spring 2014 Cohort b
     DEFINE('DB_FORM_DATABASE', 'forms_db');
 ?>
 ```
-This file should be placed within the admin directory, as it is used by that directory's files, via `include` statements.
+This file should be placed within the admin directory, as it (cred_admin.php) is used by that directory's files, via `include` statements.
 
 ## Site Deployment
 ***The following assumes you've first deployed [the amp-test site](https://github.com/AmundsenJunior/amp-test) to the same machine.***
