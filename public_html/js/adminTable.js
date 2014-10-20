@@ -9,10 +9,13 @@ $(document).ready(function(){
 				if($heading){
 					headingString += "<th>"+key+"</th>";
 				}
-				if(key === "is_complete"){
+				if(key === "application_id"){
+					Approw += "<td><a href='resources/Administrator/view_Application.php?application_id="+row["application_id"]+"'>";
+					Approw += value+"</td></a>";
+				} else if(key === "is_complete"){
 					if(value == 1){
 						Approw += "<td>Complete</td>";
-					} else Approw += "<td>Incomplete</td></t>";
+					} else Approw += "<td>Incomplete</td>";
 				} else Approw += "<td>"+value+"</td>";
 			});
 			Approw += "</tr>";
