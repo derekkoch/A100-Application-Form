@@ -33,6 +33,10 @@
 		<link href="../public_html/css/form.css" rel="stylesheet">
 
 
+    <!-- Custom CSS -->
+    <link href="../public_html/css/simple-sidebar.css" rel="stylesheet">
+
+
 
 		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 
@@ -60,367 +64,210 @@
 
 
 
-	<body>
+	<body
+	 <div id="wrapper">
 
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">
+                    <a href="#">
+                        A100 Application
+                    </a>
+                </li>
+                <li>
+                    <a id="userLink" data-section="1" class="selected" href="taiwo_new_applicant.php?section=1">User</a>
+                </li>
+                <li>
+                    <a id="personalLink" section-id="2" href="taiwo_new_applicant.php?section=2">Personal Details</a>
+                </li>
+                <li>
+                    <a id="referLink" section-id="3" href="taiwo_new_applicant.php?section=3">Referrals</a>
+                </li>
+                <li>
+                    <a id="scheduleLink" schedule-id="4" href="#schedule">Schedule Information</a>
+                </li>
+                <li>
+                    <a id="experienceLink" experience-id="5" href="#experience">Technical Experience</a>
+                </li>
+                <li>
+                    <a id="materialLink" material-id="6" href="#material">Supplemental Materials</a>
+                </li>
+                <?php
+                	echo "<li><a id='new-db-link' href='taiwo_new_applicant.php?section=99'>Something new</a></li>";
+                ?>
+            </ul>
+        </div>
+        <!-- /#sidebar-wrapper -->
 
-
-		<div class="container-fluid">
-
-
+        <!-- Page Content -->
+        <!--div id="page-content-wrapper" -->
+         	<div class="container-fluid">
 
 			<div class="row">
-
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 bottomMargin">
-
 					<h1>A100 Application Form</h1>
+				</div>
+			</div>
+
+			<div class="row">
+				<form action="insert.php" method="post" enctype="multipart/form-data">
+
+					<?php
+
+					// put query string params into qs array
+					parse_str($_SERVER['QUERY_STRING'], $qsParams);
+					// print_r($qsParams);
+
+
+					include "cred_int.php";
+
+							//Create connection
+					$appCon = mysqli_connect(HOST, USER, PASSWORD, DATABASE_NAME);
+						// Check connection
+					if (mysqli_connect_errno()) {
+						echo "Failed to connect to form_db MySQL: " . mysqli_connect_error();
+					}
+
+						//sorts content by section on sections.arrange
+					$qstnSql = "SELECT * FROM fields INNER JOIN sections 
+					ON fields.section_id=sections.section_id
+					where fields.section_id = " . $qsParams['section'] . " ORDER BY sections.arrange"; 
+					// print_r($qstnSql);
+					$qstnArray = mysqli_query($appCon, $qstnSql);
+
+					$arrangeCounter = 0;
+					while($row = mysqli_fetch_array($qstnArray))
+					{
+						// if($row['section_id']==1){
+						// checks if moving to a new section, if counter is less than section.arrange, print header and body if available
+						if($arrangeCounter<$row['arrange'])
+						{
+						
+							if($row['pre_text']==NULL && $row['post_text']==NULL)
+							{
+								echo "<h3>" . $row['section_name'] . "*</h3>";
+							}else
+							{
+								echo "<h3>" . $row['section_name'] . "</h3>";
+							}
+							echo "<b>" . $row['section_description'] . "</b>";
+							$arrangeCounter = $row['arrange'];
+						}
+
+						//if($row['is_active']==X){  //flag functionality not working right now due to ambiguous column headers
+						//	echo "is active flag:" . $row['is_active'];
+						//}else
+						if($row['is_required']==1 && $row['post_text']==NULL && $row['pre_text']!= NULL){
+							echo "<h4>" . $row['pre_text'] . "*</h4>";
+						}else
+						{
+							echo "<h4>" . $row['pre_text'] . "</h4>";
+						}
+
+							$insideText = "";  //variable to hold inside text content/reduce need for " and '
+							$fieldName = $row['field_name'];  //variable to hold DB name content/reduce need for " and '
+							$fieldId = $row['field_id'];  //variable to hold DB name content/reduce need for " and '
+							
+							if($row['inside_text']!=NULL){
+								$insideText = $row['inside_text'];
+							}
+
+
+
+						// Switch code
+
+							switch ($row['options_target']){
+								case NULL:
+								echo "<input class='form-control' type='text' name='$fieldName' placeholder='$insideText'>";
+								break;
+
+								case 'textarea':
+								echo "</br><textarea class='form-control' name='$fieldName' placeholder='$insideText'></textarea>";
+								break;
+
+								case 'password':
+								echo "<input class='form-control' type='".$row['options_target']."' name='$fieldName' placeholder='$insideText'>";
+								break;	
+
+								case 'file':
+								echo "<input type='file' name=" . $fieldName . " id=" . $fieldName . "><br>";
+								break;
+
+								case 'question_options':
+									//handles multiple choice options reading from question_options table
+								$optnSql="SELECT * FROM fields INNER JOIN question_options 
+								WHERE fields.field_name = '$fieldName' AND question_options.field_name='$fieldName'";
+								$optnArray = mysqli_query($appCon, $optnSql);
+
+								while($optnRow=mysqli_fetch_array($optnArray)){
+									$optnInputType = $optnRow['input_type'];
+										//$optnFieldId=$optnRow['field_id'];
+									$optnId=$optnRow['q_option_id'];
+									$optnName=$optnRow['option_name'];
+									if($optnInputType!=NULL){
+										echo "<input type='$optnInputType' name='$fieldName' value='$optnId'>$optnName";	
+									}else{echo "$optnName <input type='$optnInputType' name='$fieldName'>";}
+									echo "</br>";
+								}
+								break;
+
+								default:
+								$targetTable = $row['options_target'];
+								$dropDownSql = "SELECT * FROM $targetTable";
+								$dropDownArray = mysqli_query($appCon,$dropDownSql);
+								echo "</br>";
+								echo "<select name='$fieldName'>";
+								echo "<option>Select a value</option>";
+								while($dropDownRow = mysqli_fetch_array($dropDownArray)){
+									//echo "test";
+									$dropDownValue = $dropDownRow['name'];
+									echo "<option value='$dropDownValue'>$dropDownValue</option>";
+								}
+								echo "</select>";
+								break;
+							}
+
+
+							echo "</br>";
+							if($row['post_text']!=NULL)
+							{
+								if($row['is_required']==1){
+									echo $row['post_text'] . "*";
+								}else{
+									echo $row['post_text'];
+								}
+							}
+						}
+								
+						?>
+						<a href="taiwo_new_applicant.php?section=<?php echo $_GET['section'] + 1; ?>"> NEXT </a>
+
+						<a href="taiwo_new_applicant.php?section=<?php echo $_GET['section'] - 1; ?>"> PREV </a>
+
+						<div class="row form">
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 topMarginSmall bottomMargin">
+								<button class="btn btn-lg btn-primary btn-block" type="submit" name ="submit" Value ="submit">
+									Submit Completed Application
+								</button>
+								<button class="btn btn-lg btn-primary btn-block" type="submit" name ="save" Value ="save">
+									Save Application to Complete Later
+								</button>
+							</div>
+						</div>
+
+					</form>
 
 				</div>
 
 			</div>
 
-
-
-			<div class="row">
-
-				<form action="insert.php" method="post" enctype="multipart/form-data">
-
-
-
-					<?php
-
-						
-
-						error_reporting(-1);
-
-						ini_set("display_errors", "On");
-
-
-
-						include "cred_int.php";
-
-						include "../admin/db_conn.php";
-
-
-
-						//Create connection
-
-						//$formCon = mysqli_connect(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_FORM_DATABASE);
-
-						
-
-						$appform= dbconn();
-
-						// $info = 'mysql:host=' . 'localhost' . ' ;dbname=' . 'application_db';
-
-						
-
-						// $user='root';
-
-						// $pass='tat.1983';
-
-						// echo $info. " " .$user. " " . $pass;
-
-						// $appform= new PDO($info, 'root','tat.1983');
-
-						
-
-						//sorts content by section on sections.arrange
-
-						$qstnSql = "SELECT * FROM fields INNER JOIN sections 
-
-							ON fields.section_id=sections.section_id ORDER BY sections.arrange"; 
-
-						
-
-						//$qstnArray = mysqli_query($formCon, $qstnSql);
-
-
-
-						$query = $appform->prepare($qstnSql);
-
-						$query->execute();
-
-
-
-						$results=$query->fetchAll(PDO::FETCH_OBJ);
-
-						// print_r($results);
-
-
-
-						// foreach ($results as $row){
-
-						//  	echo $row->field_id;
-
-						// }
-
-
-
-
-
-						$arrangeCounter = 0;
-
-						if (isset($_GET['section'])){
-
-							$arrangeCounter =$_GET['section'];  //_GET gets information from the URL; 'section'
-
-						}
-
-						
-
-						//while($row = mysqli_fetch_array($qstnArray))
-
-						$titlehasbeendisplayed = false;
-
-						foreach ($results as $row)
-
-						{
-
-						// 	// checks if moving to a new section, if counter is less than section.arrange, print header and body if available
-
-						// 	if($arrangeCounter<$row['arrange'])
-
-						// // 	{
-
-						//  		if($row['pre_text']==NULL && $row['post_text']==NULL)
-
-						//  		{
-
-						//  			echo "<h3>" . $row['section_name'] . "*</h3>";
-
-						//  		}else
-
-						// // 		{
-
-						// // 			echo "<h3>" . $row['section_name'] . "</h3>";
-
-						// // 		}
-
-						// // 		echo "<b>" . $row['section_description'] . "</b>";
-
-						// // 		$arrangeCounter = $row['arrange'];
-
-						// // 		}
-
-                            if ($row->arrange > $arrangeCounter){ //section of current row is too bigstop the loop, the end criteria has been met
-
-							    break;
-
-							} else if ($row->arrange < $arrangeCounter){ //section of current row is too small
-
-							    //keep going until it is equal
-
-							    continue;
-
-						    }
-
-							
-
-							if(!$titlehasbeendisplayed)	{
-
-								echo "<h3>".$row->section_name. "*</h3>";
-
-								echo "<b>" . $row->section_description. "</b>";
-
-								$titlehasbeendisplayed=true;
-
-							}
-
-
-
-							// if($row->is_active==X){  //flag functionality not working right now due to ambiguous column headers
-
-							// 	echo "is active flag:" . $row->is_active;
-
-							// }else
-
-							 //{
-
-								if($row->is_required==1 && $row->post_text==NULL && $row->pre_text!= NULL){
-
-									echo "<h4>" . $row->pre_text . "*</h4>";
-
-								}else{
-
-									echo "<h4>" . $row->pre_text . "</h4>";}
-
-
-
-								$insideText = "";  //variable to hold inside text content/reduce need for " and '
-
-								$fieldName = $row->field_name;  //variable to hold DB name content/reduce need for " and '
-
-								$fieldId = $row->field_id;  //variable to hold DB name content/reduce need for " and '
-
-								
-
-								if($row->inside_text!=NULL){
-
-									$insideText = $row->inside_text;
-
-								}
-
-
-
-								if($row->options_target==NULL)
-
-								{
-
-									echo '<input class="form-control" type="text" name="{$fieldName}" placeholder="$insideText">';
-
-								}elseif($row->options_target=='textarea'){
-
-									echo "</br><textarea class='form-control' name='$fieldName' placeholder='$insideText'></textarea>";
-
-								}elseif($row->options_target=='file'){
-
-									//echo "</br><label for=".$fieldName.">".$fieldName."</label>";
-
-									echo "<input type='file' name=" . $fieldName . " id=" . $fieldName . "><br>";
-
-								}
-
-								elseif($row->options_target=="question_options"){
-
-									
-
-									//handles multiple choice options reading from question_options table
-
-									$optnSql="SELECT * FROM fields INNER JOIN question_options 
-
-										WHERE fields.field_name = '$fieldName' AND question_options.field_name='$fieldName'";
-
-									
-
-									$optnArray = $appform->prepare($optnSql);
-
-									$optnArray->execute();
-
-									//$optnArray = mysqli_query($formCon, $optnSql);
-
-
-
-									foreach($optnArray->fetchAll(PDO::FETCH_OBJ) as $optnRow){
-
-										$optnInputType = $optnRow->input_type;
-
-										//$optnFieldId=$optnRow['field_id'];
-
-										$optnId=$optnRow->q_option_id;
-
-										$optnName=$optnRow->option_name;
-
-										if($optnInputType!=NULL){
-
-											echo "<input type='$optnInputType' name='$fieldName' value='$optnId'>$optnName";	
-
-										}else{echo "$optnName <input type='$optnInputType' name='$fieldName'>";}
-
-										echo "</br>";
-
-									}
-
-
-
-								}else{
-
-									$targetTable = $row->options_target;
-
-									$dropDownSql = "SELECT * FROM $targetTable";
-
-									$dropDownArray=$appform->prepare($dropDownSql);
-
-									$dropDownArray->execute();
-
-
-
-									// $dropDownArray = mysqli_query($formCon,$dropDownSql);
-
-									echo "</br>";
-
-									echo "<select name='$fieldName'>";
-
-									echo "<option>Select a value</option>";
-
-
-
-									foreach($dropDownArray->fetchAll(PDO::FETCH_OBJ) as $dropDownRow){
-
-											echo "test";
-
-											$dropDownValue = $dropDownRow->name;
-
-											echo "<option value='$dropDownValue'>$dropDownValue</option>";
-
-										}
-
-									echo "</select>";
-
-								}
-
-								
-
-								echo "</br>";
-
-								if($row->post_text!=NULL)
-
-								{
-
-									if($row->is_required==1){
-
-										echo $row->post_text. "*";
-
-									}else{
-
-										echo $row->post_text;
-
-									}
-
-								}
-
-							//}
-
-						}
-
-
-
-					?>
-
-
-
-					<div class="row form">
-
-						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 topMarginSmall bottomMargin">
-
-							<button class="btn btn-lg btn-primary btn-block" type="submit" name ="submit" Value ="submit">
-
-								Submit Completed Application</button>
-
-							<button class="btn btn-lg btn-primary btn-block" type="submit" name ="save" Value ="save">
-
-								Save Application to Complete Later</button>
-
-						</div>
-
-					</div>
-
-
-
-				</form>
-
 			
+        <!--/div-->
+        <!-- /#page-content-wrapper -->
 
-			</div>
+    </div>
 
-
-
-		</div>
-
-
-
-<a href="new_applicant.php?section=<?php echo $_GET['section'] + 1; ?>"> NEXT </a>
-
-<a href="new_applicant.php?section=<?php echo $_GET['section'] - 1; ?>"> PREV </a>
 
 		
 
@@ -432,13 +279,32 @@
 
 		<!-- Include all compiled plugins (below), or include individual files as needed -->
 
-		<script src="public_html/js/bootstrap.js"></script>
-
-
+		<script src="../public_html/js/bootstrap.js"></script>
 
 	</body>
 
+ <!-- jQuery Version 1.11.0 -->
+    <script src="../public_html/js/jquery-1.11.0.js"></script>
 
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../public_html/js/bootstrap.min.js"></script>
+
+    <script src="../public_html/js/section_form.js"></script>
+
+
+    <!-- Menu Toggle Script -->
+    <script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+
+    // $(".sidebar-nav li").click(function(e){
+    // 	var $this   = $(this);
+    // 	$("li").removeClass("selected");
+    // 	$this.addClass("selected");
+    // });
+    </script>
 
 
 
